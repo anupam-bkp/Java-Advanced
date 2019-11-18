@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="addr" class="com.anupam.springtest1.Address">  
+        <property name="city" value="Bangalore" />
+        <property name="houseNo" value="75" />
+    </bean>
+
+    <bean id="personalInfo" class="com.anupam.springtest1.PersonalInfo">  
+        <property name="name" value="Anupam" />
+        <property name="number" value="12345" />
+        <constructor-arg ref="addr" />
+    </bean>
+
+    <bean id="shopCart" class="com.anupam.springtest1.ShoppingCart">
+       <property name="numOfItems" value="1" />
+       <property name="product" value="Car" />
+    </bean>
+    
+	<bean id="cust" class="com.anupam.springtest1.Customer">
+        <property name="shoppingCart" ref="shopCart" />
+        <constructor-arg value="1"/>
+        <constructor-arg ref="personalInfo"/>
+    </bean>
+   
+</beans>
