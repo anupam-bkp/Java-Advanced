@@ -17,7 +17,7 @@ Project Description:
 
 4. Spring-Test4
 	
-	Contains @Resourceod
+	Contains @Resource
 
 5. Spring-Test5
 
@@ -26,3 +26,7 @@ Project Description:
 		   @PostConstruct, InitializingBean, init-method (in xml)
 		   @PreDestroy, DisposableBean, destroy-method (in xml)
 		   BeanPostProcessor
+
+6. Spring-Test6
+	
+	Contains : Java Configuration @Configuration, @Bean, @Inject, @Import
