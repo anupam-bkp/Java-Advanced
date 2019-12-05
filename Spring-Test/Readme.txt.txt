@@ -30,3 +30,12 @@ Project Description:
 6. Spring-Test6
 	
 	Contains : Java Configuration @Configuration, @Bean, @Inject, @Import
+
+
+=====================================================================================================
+
+7. Spring-MVC-Test1
+	contains : Spring MVC basic example with XML based configuration
+
+8. Spring-MVC-Test2
+	contains : Spring MVC basic example with Annotation
