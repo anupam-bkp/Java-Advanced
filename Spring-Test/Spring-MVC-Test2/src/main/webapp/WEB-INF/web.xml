@@ -3,7 +3,7 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Archetype Created Web Application</display-name>
+  <display-name>Spring MVC Test2 - Annotations</display-name>
   
   <!-- Add Spring MVC DispatcherServlet as front controller -->
 	<servlet>
@@ -14,7 +14,7 @@
         <init-param>
        		<param-name>contextConfigLocation</param-name>
        		<param-value>/WEB-INF/spring-servlet.xml</param-value>
-    		</init-param>
+    	</init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
  
@@ -22,5 +22,8 @@
         <servlet-name>spring</servlet-name>
         <url-pattern>/</url-pattern> 
     </servlet-mapping>
-  
+    
+   <welcome-file-list>
+  	<welcome-file>login.jsp</welcome-file>
+  </welcome-file-list>
 </web-app>
