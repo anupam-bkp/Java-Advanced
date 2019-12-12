@@ -19,7 +19,7 @@ public class HibernateJPATest1Write {
 		
 		System.out.println("Starting Transaction");
 		em.getTransaction().begin();
-		
+				
 		//Creating Employees table and persisting employee object
 		employees.forEach(em :: persist);
 		
