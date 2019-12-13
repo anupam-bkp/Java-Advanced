@@ -19,12 +19,12 @@ public class HibernateJPATest3ReadUsingQueryDSL {
 	
 		System.out.println("Read Started");
 		
-		JPAQuery<QEmployee> query = new JPAQuery<>(em);
+		JPAQuery<Employee> query = new JPAQuery<>(em);
 		
 		QEmployee qEmp = QEmployee.employee;
-		List<QEmployee> fetch = query.from(qEmp).fetch();
+		List<Employee> fetch = query.from(qEmp).fetch();
 		
-//		fetch.stream().map(qEMP -> (Employee)qEMP).forEach(System.out :: println);
+		fetch.stream().map(qEMP -> (Employee)qEMP).forEach(System.out :: println);
 		
 	}
 
