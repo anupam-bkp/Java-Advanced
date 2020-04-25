@@ -6,10 +6,15 @@ Project Description:
 1. Spring-Test1 :
 
 	Contains XML based bean definition
+	
+	a. Setter Injection
+	b. Constructor Injection
 
 2. Spring Test2 : 
 	
 	Contains XML based autowire property
+		autowire = byType, byName (using setter methods)
+			   constructor (using constructor)
 
 3. Spring-Test3 :
 	 

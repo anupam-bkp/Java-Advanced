@@ -5,6 +5,11 @@ public class Product {
 	String name;
 	
 	long price;
+	
+	public Product() {
+		super();
+		System.out.println("no-arg constructor Product.Product()");
+	}
 
 	public String getName() {
 		return name;

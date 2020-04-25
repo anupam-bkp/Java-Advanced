@@ -6,7 +6,7 @@ public class Address {
 	int houseNo;	
 	
 	public Address() {
-		System.out.println("no-arg constructo Address.Address()");
+		System.out.println("no-arg constructor Address.Address()");
 	}
 
 	public String getCity() {
@@ -14,6 +14,7 @@ public class Address {
 	}
 
 	public void setCity(String city) {
+		System.out.println("Address.setCity()");
 		this.city = city;
 	}
 	
@@ -22,6 +23,7 @@ public class Address {
 	}
 
 	public void setHouseNo(int houseNo) {
+		System.out.println("Address.setHouseNo()");
 		this.houseNo = houseNo;
 	}
 }

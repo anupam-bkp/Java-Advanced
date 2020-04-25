@@ -4,14 +4,14 @@ public class Customer {
 
 	int id;
 	PersonalInfo info;					//Constructor Injection
-	ShoppingCart shoppingCart;			//Setter Injection
+	ShoppingCart shoppingCart;			//Constructor Injection
 	
 	public Customer(PersonalInfo info, ShoppingCart shoppingCart) {
 		super();
 		this.info = info;
 		this.shoppingCart = shoppingCart;
 		
-		System.out.println("3-arg Customer.Customer()");
+		System.out.println("2-arg Customer.Customer()");
 	}
 
 	public int getId() {
@@ -33,6 +33,7 @@ public class Customer {
 	}
 
 	public ShoppingCart getShoppingCart() {
+		System.out.println("Customer.getShoppingCart()");
 		return shoppingCart;
 	}
 }

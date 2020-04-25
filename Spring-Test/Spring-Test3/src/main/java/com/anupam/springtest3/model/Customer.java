@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 public class Customer {
 
 	int id;
-	PersonalInfo info;					//Constructor Injection
-	ShoppingCart shoppingCart;			//Setter Injection
+	PersonalInfo info;
+	ShoppingCart shoppingCart;
 	
 	@Autowired
 	public Customer(@Qualifier("personalInfo")PersonalInfo info, ShoppingCart shoppingCart) {
@@ -15,7 +15,7 @@ public class Customer {
 		this.info = info;
 		this.shoppingCart = shoppingCart;
 		
-		System.out.println("3-arg Customer.Customer()");
+		System.out.println("2-arg Customer.Customer()");
 	}
 
 	public int getId() {

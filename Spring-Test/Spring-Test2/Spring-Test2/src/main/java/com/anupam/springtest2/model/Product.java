@@ -11,6 +11,7 @@ public class Product {
 	}
 
 	public void setName(String name) {
+		System.out.println("Product.setName()");
 		this.name = name;
 	}
 
@@ -19,6 +20,7 @@ public class Product {
 	}
 
 	public void setPrice(long price) {
+		System.out.println("Product.setPrice()");
 		this.price = price;
 	}
 

@@ -2,17 +2,17 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
-        https://www.springframework.org/schema/beans/spring-beans.xsd">
-
-	<bean id="addr" class="com.anupam.springtest1.Address">  
-        <property name="city" value="Bangalore" />
-        <property name="houseNo" value="75" />
-    </bean>
+    https://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="personalInfo" class="com.anupam.springtest1.PersonalInfo">  
         <property name="name" value="Anupam" />
         <property name="number" value="12345" />
         <constructor-arg ref="addr" />
+    </bean>
+    
+	<bean id="addr" class="com.anupam.springtest1.Address">  
+        <property name="city" value="Bangalore" />
+        <property name="houseNo" value="75" />
     </bean>
 
     <bean id="shopCart" class="com.anupam.springtest1.ShoppingCart">
