@@ -1,4 +1,4 @@
-package com.anupam.springbootest1;
+package com.anupam.springboottest1;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

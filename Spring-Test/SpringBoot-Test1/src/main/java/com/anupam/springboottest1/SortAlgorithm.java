@@ -1,4 +1,4 @@
-package com.anupam.springbootest1;
+package com.anupam.springboottest1;
 
 public interface SortAlgorithm {
 

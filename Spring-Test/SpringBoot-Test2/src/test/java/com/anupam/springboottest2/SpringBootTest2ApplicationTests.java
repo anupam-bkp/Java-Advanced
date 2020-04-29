@@ -1,10 +1,10 @@
-package com.anupam.springbootest1;
+package com.anupam.springboottest2;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringBootTest1ApplicationTests {
+class SpringBootTest2ApplicationTests {
 
 	@Test
 	void contextLoads() {

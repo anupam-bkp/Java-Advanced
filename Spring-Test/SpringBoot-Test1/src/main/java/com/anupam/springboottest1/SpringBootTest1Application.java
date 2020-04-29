@@ -1,4 +1,4 @@
-package com.anupam.springbootest1;
+package com.anupam.springboottest1;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
