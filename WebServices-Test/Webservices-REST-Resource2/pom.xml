@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.anupam</groupId>
-    <artifactId>Webservices-REST-Resource1</artifactId>
+    <artifactId>Webservices-REST-Resource2</artifactId>
     <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Webservices-REST-Resource1</name>
+    <name>Webservices-REST-Resource2</name>
 
     <build>
-        <finalName>Webservices-REST-Resource1</finalName>
+        <finalName>Webservices-REST-Resource2</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -18,8 +18,8 @@
                 <version>2.5.1</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -45,18 +45,18 @@
             <!-- artifactId>jersey-container-servlet</artifactId -->
         </dependency>
         
-        <!-- To get JSON support -->
         <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-moxy</artifactId>
-        </dependency>
-        
-         <dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
 		</dependency>
         
+        <!-- uncomment this to get JSON support
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-moxy</artifactId>
+        </dependency>
+        -->
     </dependencies>
     <properties>
         <jersey.version>2.26-b03</jersey.version>
