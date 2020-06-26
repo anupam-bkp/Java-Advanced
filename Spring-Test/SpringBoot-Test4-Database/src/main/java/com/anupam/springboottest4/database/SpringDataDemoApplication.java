@@ -10,7 +10,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.anupam.springboottest4.database.entity.Customer;
-import com.anupam.springboottest4.database.jpa.CustomerJpaRepository;
 import com.anupam.springboottest4.database.springdata.CustomerSpringDataRepository;
 
 @SpringBootApplication

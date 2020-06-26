@@ -1,0 +1,68 @@
+This document contains some basics of Spring.
+
+=====================================================================================================================
+1. Spring Common
+----------------
+
+
+
+
+
+
+
+=====================================================================================================================
+2. Spring Data JPA
+------------------
+
+==> Below are some methods present in JpaRepository<T, ID> interface.
+
+	--> org.springframework.data.jpa.repository
+	public interface JpaRepository<T, ID> extends PagingAndSortingRepository<T, ID>, QueryByExampleExecutor<T>
+	
+	1. List<T> findAll()				//@Override
+	2. List<T> findAll(Sort sort)			//@Override
+	3. List<T> findAllById(Iterable<ID> ids)	//@Override
+	4. <S extends T> List<S> saveAll(Iterable<S> entities)	//@Override
+	5. void flush();
+	6. <S extends T> S saveAndFlush(S entity);
+	7. void deleteInBatch(Iterable<T> entities);
+	8. void deleteAllInBatch();
+	9. T getOne(ID id);
+	10. <S extends T> List<S> findAll(Example<S> example);		//@Override
+	11. <S extends T> List<S> findAll(Example<S> example, Sort sort); //@Override
+
+	--> org.springframework.data.repository
+	public interface PagingAndSortingRepository<T, ID> extends CrudRepository<T, ID>
+	
+	1. Iterable<T> findAll(Sort sort)
+	2. Page<T> findAll(Pageable pageable)
+
+	--> org.springframework.data.repository
+	public interface CrudRepository<T, ID> extends Repository<T, ID>
+
+	1. <S extends T> S save(S entity);
+	2. <S extends T> Iterable<S> saveAll(Iterable<S> entities);
+	3. Optional<T> findById(ID id);
+	4. boolean existsById(ID id);
+	5. Iterable<T> findAll();
+	6. Iterable<T> findAllById(Iterable<ID> ids);
+	7. long count();
+	8. void deleteById(ID id);
+	9. void delete(T entity);
+	10. void deleteAll(Iterable<? extends T> entities);
+	11. void deleteAll();
+
+	--> org.springframework.stereotype.Indexed
+	public interface Repository<T, ID>
+
+=====================================================================================================================
+3. Spring Rest
+--------------
+
+
+
+
+
+
+
+======================================================================================================================
