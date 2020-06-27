@@ -1,6 +1,7 @@
 package com.example.dbtest.dataJpa;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -11,17 +12,79 @@ import org.springframework.stereotype.Service;
 public class InstructorService {
 
 	@Autowired
-	InstructorJpaRepository instructorJpaRepo;
+	private InstructorJpaRepository instructorJpaRepo;
 	
+	@Transactional
+	public long getCountOfInstructors() {
+		return instructorJpaRepo.count();		//CrudRepository
+	}
+	
+	@Transactional
+	public boolean checkIFInstructorExists(final Integer id) {
+		return instructorJpaRepo.existsById(id);	//CrudRepository
+	}
+	
+	@Transactional
+	public Instructor getInstructorById(final Integer id) {
+		//Not Working
+		return instructorJpaRepo.getOne(id);		//JpaRepository
+	}
+	
+	@Transactional
+	public Optional<Instructor> findInstructorById(final Integer id){
+		return instructorJpaRepo.findById(id);		//CrudRepository
+	}
+	
+	@Transactional
+	public List<Instructor> findInstructorsById(final Iterable<Integer> ids) {
+		 return instructorJpaRepo.findAllById(ids);		//JpaRepository
+	}
+
 	@Transactional
 	public List<Instructor> findAllInstructors(){
-		return instructorJpaRepo.findAll();
+		return instructorJpaRepo.findAll();			//JpaRepository
 	}
 	
 	@Transactional
-	public Instructor findInstructorById(Integer id){
-		return instructorJpaRepo.getOne(id);
+	public void deleteInstructorsInBatch(final Iterable<Instructor> entities) {
+		instructorJpaRepo.deleteInBatch(entities);  //JpaRepository
 	}
+	
+	@Transactional
+	public void deleteAllInstructorsInBatch() {
+		instructorJpaRepo.deleteAllInBatch();    //JpaRepository
+	}
+	
+	@Transactional
+	public void deleteInstructorById(final Integer id) {
+		instructorJpaRepo.deleteById(id);		//CrudRepository
+	}
+	
+	@Transactional
+	public void deleteInstructor(final Instructor entity) {
+		instructorJpaRepo.delete(entity);		//CrudRepository
+	}
+	
+	@Transactional
+	public void deleteInstructors(final Iterable<Instructor> entities) {
+		instructorJpaRepo.deleteAll(entities);		//CrudRepository
+	}
+	
+	@Transactional
+	public void deleteAllInstructors() {
+		instructorJpaRepo.deleteAll();      //CrudRepository
+	}
+	
+	@Transactional
+	public void addInstructor(final Instructor entity) {
+		instructorJpaRepo.save(entity);   //CrudRepository
+	}
+	
+	@Transactional
+	public void addInstructors(final Iterable<Instructor> entities) {
+		instructorJpaRepo.saveAll(entities);	//JpaRepository
+	}
+	
 	
 	public void test() {
 		
