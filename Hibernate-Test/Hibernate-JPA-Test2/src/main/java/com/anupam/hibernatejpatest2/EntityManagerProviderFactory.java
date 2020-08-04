@@ -90,41 +90,41 @@ public class EntityManagerProviderFactory {
 		settings.put("hibernate.current_session_context_class", "thread");
 		settings.put("hibernate.query.plan_cache_max_size", "128");
 
-
-		ClassLoaderService classLoaderService = new ClassLoaderServiceImpl(this.getClass().getClassLoader());
+		final ClassLoaderService classLoaderService = 
+				new ClassLoaderServiceImpl(this.getClass().getClassLoader());
 		
-		// configure bootstrapServiceRegistry
-		BootstrapServiceRegistryBuilder bootstrapServiceRegistryBuilder = new BootstrapServiceRegistryBuilder();
+		// configure BootstrapServiceRegistry
+		final BootstrapServiceRegistryBuilder bootstrapServiceRegistryBuilder = 
+					new BootstrapServiceRegistryBuilder();
 		bootstrapServiceRegistryBuilder.enableAutoClose();
 		bootstrapServiceRegistryBuilder.applyClassLoaderService(classLoaderService);
-		BootstrapServiceRegistry bootstrapServiceRegistry = bootstrapServiceRegistryBuilder.build();
+		
+		final BootstrapServiceRegistry bootstrapServiceRegistry = 
+				bootstrapServiceRegistryBuilder.build();
 
-		// configure standardRegistry
-		StandardServiceRegistryBuilder standardServiceRegistryBuilder = new StandardServiceRegistryBuilder(
-				bootstrapServiceRegistry);
+		// configure StandardServiceRegistry
+		final StandardServiceRegistryBuilder standardServiceRegistryBuilder = 
+				new StandardServiceRegistryBuilder(bootstrapServiceRegistry);
 		standardServiceRegistryBuilder.applySettings(settings);
-		ServiceRegistry standardRegistry = standardServiceRegistryBuilder.build();
+		
+		final ServiceRegistry standardRegistry = standardServiceRegistryBuilder.build();
 
 		// create metadata sources
-		MetadataSources metadataSources = new MetadataSources(standardRegistry);
+		final MetadataSources metadataSources = new MetadataSources(standardRegistry);
 
 		// Fill persistence classes
 		Collection<Class<?>> jpaClasses = new ArrayList<Class<?>>();
-
-
 		// programmatically fill metadata with classes
-		for (Class<?> persistenceClass : jpaClasses)
-		{
+		for (Class<?> persistenceClass : jpaClasses){
 			metadataSources.addAnnotatedClass(persistenceClass);
 		}
 
 		// build metadata
-		MetadataBuilder metadataBuilder = metadataSources.getMetadataBuilder();
+		final MetadataBuilder metadataBuilder = metadataSources.getMetadataBuilder();
 		_metadata = metadataBuilder.build();
 
 		// configure session factory
 		SessionFactoryBuilder sessionFactoryBuilder = _metadata.getSessionFactoryBuilder();
-
 
 		_sessionFactory = sessionFactoryBuilder.build();
 
@@ -160,15 +160,13 @@ public class EntityManagerProviderFactory {
 	}
 
 
-	private String buildTrigger(String tableName, String actionKind, String triggerSuffix)
-	{
+	private String buildTrigger(String tableName, String actionKind, String triggerSuffix){
 		return "CREATE TRIGGER "
 				+ tableName + "_" + triggerSuffix + " AFTER " + actionKind + " ON " + tableName
 				+ " FOR EACH ROW CALL " + "\"com.anupam.hibernatejpatest2.H2JPATrigger\";";
 	}
 
-	final static class DatabaseMapping
-	{
+	final static class DatabaseMapping{
 
 		/** Mapping : Table Name => JPA Class (Used for trigger initialization) */
 		private static Map<String, Class<?>> _map = new HashMap<>();
@@ -179,13 +177,11 @@ public class EntityManagerProviderFactory {
 		/** Mapping : JPA class name => JPA Class */
 		private static Map<String, Class<?>> _classes = new HashMap<>();
 
-		public Class<?> getEntityClass(String tableName)
-		{
+		public Class<?> getEntityClass(String tableName){
 			return _map.get(tableName);
 		}
 
-		public String getTableName(Class<?> entity)
-		{
+		public String getTableName(Class<?> entity){
 			return _pam.get(entity);
 		}
 

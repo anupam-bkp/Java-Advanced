@@ -14,7 +14,7 @@ public class InstructorJpaDaoImpl implements InstructorJpaDao{
 	 * @Autowired private SessionFactory factory;
 	 */
 	@Autowired
-	private EntityManager factory;
+	private EntityManager entityManager;
 
 	@Override
 	public List<Instructor> getAllInstructors() {
@@ -22,7 +22,7 @@ public class InstructorJpaDaoImpl implements InstructorJpaDao{
 //		final Session session = factory.getCurrentSession();
 		
 		List<Instructor> instructors = 
-				factory.createQuery("select i from Instructor i", Instructor.class).getResultList();
+				entityManager.createQuery("select i from Instructor i", Instructor.class).getResultList();
 
 		return instructors;
 	}

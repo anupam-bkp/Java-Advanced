@@ -36,22 +36,6 @@ Project Description:
 	
 	Contains : Java Configuration @Configuration, @Bean, @Inject, @Import
 
-
-7.SpringBoot-Test1
-	Contains: @SpringBootApplication, @Component, @Autowired, @Qualifier, @Primary,
-		  Component and Dependency Injection (CDI) - @Named, @Inject, @PreDestroy, @PostConstruct,
-		  @PropertySource, @Value
-
-
-8.SpringBoot-Test2
-	Contains: @Scope, proxyMode, @ComponentScan
-
-
-9.SpringBoot-Test3
-
-
-10.
-
 =====================================================================================================
 
 7. Spring-MVC-Test1
@@ -59,3 +43,43 @@ Project Description:
 
 8. Spring-MVC-Test2
 	contains : Spring MVC basic example with Annotation
+
+9. Spring-MVC-Test3
+	
+
+10. Spring-MVC-Test4
+
+
+==================================================================================================================
+11. SpringBoot-Test1
+	Contains: @SpringBootApplication, @Component, @Autowired, @Qualifier, @Primary,
+		  Component and Dependency Injection (CDI) - @Named, @Inject, @PreDestroy, @PostConstruct,
+		  @PropertySource, @Value
+
+
+12. SpringBoot-Test2
+	Contains: @Scope, proxyMode, @ComponentScan
+
+
+13. SpringBoot-Test3
+
+
+14. SpringBoot-Test4-Database
+
+
+15. SpringBoot-Test5-MVC
+
+
+
+=======================================================================================================
+16. SpringBoot-ECommerce
+
+
+
+=========================================================================================================
+
+17. SpringBoot-Database-Practice1
+
+
+
+=======================================================================================================

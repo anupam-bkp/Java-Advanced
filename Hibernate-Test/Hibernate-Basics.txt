@@ -1,0 +1,387 @@
+This document contains some basics about Hibernate and JPA.
+----------------------------------------------------------
+=======================================================================================================================
+Bootstrapping
+------------
+
+--> The term bootstrapping refers to initializing and starting a software component.
+ 
+--> In Hibernate, we are specifically talking about the process of building a fully functional 
+SessionFactory instance or EntityManagerFactory instance, for JPA. 
+The process is very different for each.
+
+
+======================================================================================================================
+
+Native/Hibernate Bootstrapping
+-----------------------------
+
+Two steps involved in native bootstrapping:
+1. Building of a ServiceRegistry holding the services Hibernate will need during bootstrapping and at run time.
+2. Building of an org.hibernate.boot.Metadata object containing the parsed representations of an 
+   application domain model and its mapping to a database.
+	The first thing we obviously need to build a parsed representation is the source information to be parsed 
+	(annotated classes, hbm.xml files, orm.xml files). This is the purpose of org.hibernate.boot.MetadataSources. 
+
+==> A a ServiceRegistry can be passed at a number of points in this bootstrapping process. 
+   The suggested approach is to build a StandardServiceRegistry yourself and pass that along to the 
+    MetadataSources constructor. From there, MetadataBuilder, Metadata, SessionFactoryBuilder, 
+    and SessionFactory will all pick up that same StandardServiceRegistry.
+
+--> Actually, we are concerned with building 2 different ServiceRegistries. 
+1. BootstrapServiceRegistry -- org.hibernate.boot.registry.BootstrapServiceRegistry
+2. StandardServiceRegistry -- org.hibernate.boot.registry.StandardServiceRegistry
+
+The BootstrapServiceRegistry is intended to hold services that Hibernate needs at both bootstrap and run time. 
+
+This boils down to 3 services:
+
+1. org.hibernate.boot.registry.classloading.spi.ClassLoaderService
+   which controls how Hibernate interacts with ClassLoaders.
+
+2. org.hibernate.integrator.spi.IntegratorService
+   which controls the management and discovery of org.hibernate.integrator.spi.Integrator instances.
+
+3. org.hibernate.boot.registry.selector.spi.StrategySelector
+   which controls how Hibernate resolves implementations of various strategy contracts.
+
+--> If you are ok with the default behavior of Hibernate in regards to these BootstrapServiceRegistry services 
+(which is quite often the case, especially in stand-alone environments), then you don’t need to explicitly build 
+the BootstrapServiceRegistry.
+	If you wish to alter how the BootstrapServiceRegistry is built, that is controlled through the 
+org.hibernate.boot.registry.BootstrapServiceRegistryBuilder.
+
+--> Controlling BootstrapServiceRegistry building
+
+BootstrapServiceRegistryBuilder bootstrapRegistryBuilder =
+    new BootstrapServiceRegistryBuilder();
+// add a custom ClassLoader
+bootstrapRegistryBuilder.applyClassLoader( customClassLoader );
+// manually add an Integrator
+bootstrapRegistryBuilder.applyIntegrator( customIntegrator );
+
+BootstrapServiceRegistry bootstrapRegistry = bootstrapRegistryBuilder.build();
+
+
+--> The services of the BootstrapServiceRegistry cannot be extended (added to) nor overridden (replaced).
+
+--> You will almost always need to configure the StandardServiceRegistry, 
+which is done through org.hibernate.boot.registry.StandardServiceRegistryBuilder.
+
+-->  Building a BootstrapServiceRegistryBuilder
+
+// An example using an implicitly built BootstrapServiceRegistry
+StandardServiceRegistryBuilder standardRegistryBuilder =
+    new StandardServiceRegistryBuilder();
+
+// An example using an explicitly built BootstrapServiceRegistry
+BootstrapServiceRegistry bootstrapRegistry =
+    new BootstrapServiceRegistryBuilder().build();
+
+StandardServiceRegistryBuilder standardRegistryBuilder =
+    new StandardServiceRegistryBuilder( bootstrapRegistry );
+
+
+--> A StandardServiceRegistry is also highly configurable via the StandardServiceRegistryBuilder API.
+
+--> Configuring a MetadataSources
+
+ServiceRegistry standardRegistry =
+        new StandardServiceRegistryBuilder().build();
+
+MetadataSources sources = new MetadataSources( standardRegistry );
+
+// alternatively, we can build the MetadataSources without passing
+// a service registry, in which case it will build a default
+// BootstrapServiceRegistry to use.  But the approach shown
+// above is preferred
+// MetadataSources sources = new MetadataSources();
+
+// add a class using JPA/Hibernate annotations for mapping
+sources.addAnnotatedClass( MyEntity.class );
+
+// add the name of a class using JPA/Hibernate annotations for mapping.
+// differs from above in that accessing the Class is deferred which is
+// important if using runtime bytecode-enhancement
+sources.addAnnotatedClassName( "org.hibernate.example.Customer" );
+
+// Read package-level metadata.
+sources.addPackage( "hibernate.example" );
+
+// Read package-level metadata.
+sources.addPackage( MyEntity.class.getPackage() );
+
+// Adds the named hbm.xml resource as a source: which performs the
+// classpath lookup and parses the XML
+sources.addResource( "org/hibernate/example/Order.hbm.xml" );
+
+// Adds the named JPA orm.xml resource as a source: which performs the
+// classpath lookup and parses the XML
+sources.addResource( "org/hibernate/example/Product.orm.xml" );
+
+// Read all mapping documents from a directory tree.
+// Assumes that any file named *.hbm.xml is a mapping document.
+sources.addDirectory( new File( ".") );
+
+// Read mappings from a particular XML file
+sources.addFile( new File( "./mapping.xml") );
+
+// Read all mappings from a jar file.
+// Assumes that any file named *.hbm.xml is a mapping document.
+sources.addJar( new File( "./entities.jar") );
+
+// Read a mapping as an application resource using the convention that a class named foo.bar.MyEntity is
+// mapped by a file named foo/bar/MyEntity.hbm.xml which can be resolved as a classpath resource.
+sources.addClass( MyEntity.class );
+
+--> MetadataSources has many other methods as well. Explore its API and Javadocs for more information. 
+   Also, all methods on MetadataSources offer fluent-style call chaining.
+
+--> Configuring a MetadataSources with method chaining
+
+ServiceRegistry standardRegistry =
+        new StandardServiceRegistryBuilder().build();
+
+MetadataSources sources = new MetadataSources( standardRegistry )
+    	.addAnnotatedClass( MyEntity.class )
+    	.addAnnotatedClassName( "org.hibernate.example.Customer" )
+    	.addResource( "org/hibernate/example/Order.hbm.xml" )
+    	.addResource( "org/hibernate/example/Product.orm.xml" );
+
+--> Once we have the sources of mapping information defined, we need to build the Metadata object. 
+	If you are ok with the default behavior in building the Metadata then you can simply call the 
+	buildMetadata method of the MetadataSources.
+
+--> However, if you wish to adjust the process of building Metadata from MetadataSources, 
+	you will need to use the MetadataBuilder as obtained via MetadataSources#getMetadataBuilder. 
+	MetadataBuilder allows a lot of control over the Metadata building process. 
+
+--> Building Metadata via MetadataBuilder
+
+ServiceRegistry standardRegistry =
+    new StandardServiceRegistryBuilder().build();
+
+MetadataSources sources = new MetadataSources( standardRegistry );
+
+MetadataBuilder metadataBuilder = sources.getMetadataBuilder();
+
+// Use the JPA-compliant implicit naming strategy
+metadataBuilder.applyImplicitNamingStrategy(
+    ImplicitNamingStrategyJpaCompliantImpl.INSTANCE );
+
+// specify the schema name to use for tables, etc when none is explicitly specified
+metadataBuilder.applyImplicitSchemaName( "my_default_schema" );
+
+// specify a custom Attribute Converter
+metadataBuilder.applyAttributeConverter( myAttributeConverter );
+
+Metadata metadata = metadataBuilder.build();
+
+==> The final step in native bootstrapping is to build the SessionFactory itself. 
+	Much like discussed above, if you are ok with the default behavior of building a SessionFactory from a 
+	Metadata reference, you can simply call the buildSessionFactory method on the Metadata object.
+
+--> However, if you would like to adjust that building process, you will need to use 
+	SessionFactoryBuilder as obtained via Metadata#getSessionFactoryBuilder.
+
+-->  Native Bootstrapping - Putting it all together
+
+StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
+    .configure( "org/hibernate/example/hibernate.cfg.xml" )
+    .build();
+
+Metadata metadata = new MetadataSources( standardRegistry )
+    .addAnnotatedClass( MyEntity.class )
+    .addAnnotatedClassName( "org.hibernate.example.Customer" )
+    .addResource( "org/hibernate/example/Order.hbm.xml" )
+    .addResource( "org/hibernate/example/Product.orm.xml" )
+    .getMetadataBuilder()
+    .applyImplicitNamingStrategy( ImplicitNamingStrategyJpaCompliantImpl.INSTANCE )
+    .build();
+
+SessionFactory sessionFactory = metadata.getSessionFactoryBuilder()
+    .applyBeanManager( getBeanManager() )
+    .build();
+
+==> The bootstrapping API is quite flexible, but in most cases it makes the most sense to think of it as a 3 step process:
+
+    1. Build the StandardServiceRegistry
+    2. Build the Metadata
+    3. Use those 2 to build the SessionFactory
+
+--> Building SessionFactory via SessionFactoryBuilder
+
+StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
+        .configure( "org/hibernate/example/hibernate.cfg.xml" )
+        .build();
+
+Metadata metadata = new MetadataSources( standardRegistry )
+    .addAnnotatedClass( MyEntity.class )
+    .addAnnotatedClassName( "org.hibernate.example.Customer" )
+    .addResource( "org/hibernate/example/Order.hbm.xml" )
+    .addResource( "org/hibernate/example/Product.orm.xml" )
+    .getMetadataBuilder()
+    .applyImplicitNamingStrategy( ImplicitNamingStrategyJpaCompliantImpl.INSTANCE )
+    .build();
+
+SessionFactoryBuilder sessionFactoryBuilder = metadata.getSessionFactoryBuilder();
+
+// Supply a SessionFactory-level Interceptor
+sessionFactoryBuilder.applyInterceptor( new CustomSessionFactoryInterceptor() );
+
+// Add a custom observer
+sessionFactoryBuilder.addSessionFactoryObservers( new CustomSessionFactoryObserver() );
+
+// Apply a CDI BeanManager ( for JPA event listeners )
+sessionFactoryBuilder.applyBeanManager( getBeanManager() );
+
+SessionFactory sessionFactory = sessionFactoryBuilder.build();
+
+=======================================================================================================================
+
+JPA Bootstrapping
+-----------------
+
+Bootstrapping Hibernate as a JPA provider can be done in a JPA-spec compliant manner or using a proprietary 
+bootstrapping approach. The standardized approach has some limitations in certain environments, but aside from those, 
+it is highly recommended that you use JPA-standardized bootstrapping.
+
+--> In JPA, we are ultimately interested in bootstrapping a javax.persistence.EntityManagerFactory instance. 
+The JPA specification defines two primary standardized bootstrap approaches depending on how the application 
+intends to access the javax.persistence.EntityManager instances from an EntityManagerFactory.
+
+--> It uses the terms EE and SE for these two approaches, but those terms are very misleading in this context. 
+What the JPA spec calls EE bootstrapping implies the existence of a container (EE, OSGi, etc), who’ll manage 
+and inject the persistence context on behalf of the application. 
+What it calls SE bootstrapping is everything else. 
+We will use the terms container-bootstrapping and application-bootstrapping in this guide.
+
+--> For compliant container-bootstrapping, 
+	the container will build an EntityManagerFactory for each persistent-unit 
+	defined in the META-INF/persistence.xml configuration file and make that available to the 
+	application for injection via the javax.persistence.PersistenceUnit annotation or via JNDI lookup.
+
+
+--> Injecting the default EntityManagerFactory
+
+@PersistenceUnit
+private EntityManagerFactory emf;
+
+--> Or, in case you have multiple Persistence Units (e.g. multiple persistence.xml configuration files),
+	 you can inject a specific EntityManagerFactory by Unit name:
+
+--> Injecting a specific EntityManagerFactory
+
+@PersistenceUnit(
+    unitName = "CRM"
+)
+private EntityManagerFactory entityManagerFactory;
+
+--> For compliant application-bootstrapping, rather than the container building the EntityManagerFactory for the 
+	application, the application builds the EntityManagerFactory itself using the 
+	javax.persistence.Persistence bootstrap class. 
+	The application creates an EntityManagerFactory by calling the createEntityManagerFactory method.
+
+--> Application bootstrapped EntityManagerFactory
+
+// Create an EMF for our CRM persistence-unit.
+EntityManagerFactory emf = Persistence.createEntityManagerFactory( "CRM" );
+
+--> If you don’t want to provide a persistence.xml configuration file, 
+	JPA allows you to provide all the configuration options in a PersistenceUnitInfo implementation and 
+	call HibernatePersistenceProvider.createContainerEntityManagerFactory(PersistenceUnitInfo info,
+                                                                Map properties).
+
+--> To inject the default Persistence Context, you can use the @PersistenceContext annotation.
+
+--> Inject the default EntityManager
+
+@PersistenceContext
+private EntityManager em;
+
+--> To inject a specific Persistence Context, you can use the @PersistenceContext annotation, 
+	and you can even pass EntityManager-specific properties using the @PersistenceProperty annotation.
+
+
+--> Inject a configurable EntityManager
+
+@PersistenceContext(
+    unitName = "CRM",
+    properties = {
+        @PersistenceProperty(
+            name="org.hibernate.flushMode",
+            value= "MANUAL"
+        )
+    }
+)
+private EntityManager entityManager;
+
+
+
+
+======================================================================================================================
+public class javax.persistence.Persistence{
+	public static EntityManagerFactory createEntityManagerFactory(String persistenceUnitName) {
+       	 	return  PersistenceProvider.createEntityManagerFactory(persistenceUnitName, properties);
+	}
+
+public class org.hibernate.jpa.HibernatePersistenceProvider implements javax.persistence.spi.PersistenceProvider {
+
+	public EntityManagerFactory createEntityManagerFactory(String persistenceUnitName, Map properties) {
+		return EntityManagerFactoryBuilder.build();
+	}
+}
+
+public class org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl implements 
+						org.hibernate.jpa.boot.spi.EntityManagerFactoryBuilder {
+	
+	public EntityManagerFactory build() {
+		return SessionFactoryBuilder.build();
+	}
+}
+
+public interface org.hibernate.boot.spi.SessionFactoryBuilderImplementor extends org.hibernate.boot.SessionFactoryBuilder {
+
+}
+
+
+public class org.hibernate.boot.internal.SessionFactoryBuilderImpl implements 
+						org.hibernate.boot.spi.SessionFactoryBuilderImplementor{
+
+	public SessionFactory build() {
+		return new SessionFactoryImpl();
+	}	
+}
+
+public class org.hibernate.internal.SessionFactoryImpl implements org.hibernate.engine.spi.SessionFactoryImplementor {
+
+	public Session createEntityManager() {
+		return public interface org.hibernate.Session extends javax.persistence.EntityManager
+	}
+
+	public Session getCurrentSession() throws HibernateException {
+		return public interface org.hibernate.Session extends javax.persistence.EntityManager
+	}
+}
+
+public interface org.hibernate.engine.spi.SessionFactoryImplementor extends Mapping, 
+				org.hibernate.SessionFactory {
+
+}
+
+public interface org.hibernate.SessionFactory extends javax.persistence.EntityManagerFactory, Serializable{
+
+}
+
+//hibernate
+
+org.hibernate.cfg.public class Configuration{
+
+	public SessionFactory buildSessionFactory(){
+		return public interface org.hibernate.boot.SessionFactoryBuilder.build();
+	}
+}
+
+
+
+

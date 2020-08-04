@@ -8,7 +8,7 @@
 
         <!-- JDBC Database connection settings -->
         <property name="hibernate.connection.driver_class">org.h2.Driver</property>
-        <property name="hibernate.connection.url">jdbc:h2:C:\\Users\\kanupam\\Desktop\\Databases\\test1;DB_CLOSE_DELAY=-1</property>
+        <property name="hibernate.connection.url">jdbc:h2:C:\\Users\\kanupam\\Desktop\\Databases\\SFgvsfgsf;DB_CLOSE_DELAY=-1</property>
         <property name="hibernate.connection.username">admin</property>
         <property name="hibernate.connection.password"></property>
 
